@@ -1,6 +1,7 @@
 #include "sniper.h"
 #include "bullet.h"
 #include "dead_kukku.h"
+#include "tools.h"
 
 void TA_Sniper::load(TA_Point position) {
     loadFromToml("objects/sniper.toml");
@@ -14,7 +15,7 @@ void TA_Sniper::load(TA_Point position) {
 bool TA_Sniper::update() {
     if(aim) {
         updateAim();
-        if((objectSet->checkCollision(hitbox) & TA_COLLISION_ATTACK) != 0) {
+        if((objectSet->checkCollision(hitbox) & TA_GENERIC_ATTACK) != 0) {
             objectSet->spawnObject<TA_DeadKukku>(position + TA_Point(8, 0));
             return false;
         }

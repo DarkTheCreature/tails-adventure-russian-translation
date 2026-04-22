@@ -4,19 +4,11 @@
 #include <toml.hpp>
 #include <vector>
 #include "character.h"
+#include "defs.h"
 #include "geometry.h"
 #include "hitbox_container.h"
 #include "links.h"
 #include "screen.h"
-#include "tilemap.h"
-#include "tools.h"
-
-enum TA_COLLISION_STATE {
-    TA_GROUND_COLLISION = (1 << 0),
-    TA_WALL_COLLISION = (1 << 1),
-    TA_CEIL_COLLISION = (1 << 2),
-    TA_COLLISION_ERROR = (1 << 3)
-};
 
 class TA_ObjectSet;
 enum TA_BombMode : int;
@@ -106,7 +98,7 @@ public:
     bool isVisible(const TA_Rect& hitbox);
 
     int getEmeraldsCount();
-    int getMaxRings() { return 8 + 2 * getEmeraldsCount(); }
+    int getMaxRings() { return 12 + 2 * getEmeraldsCount(); }
     void addRings(int count);
     void addRingsToMaximum();
     bool isNight() { return night; }

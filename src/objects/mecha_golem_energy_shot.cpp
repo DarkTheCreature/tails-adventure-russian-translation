@@ -1,5 +1,6 @@
 #include "mecha_golem_energy_shot.h"
 #include "explosion.h"
+#include "tools.h"
 
 void TA_MechaGolemEnergyShot::load(TA_Point position) {
     this->position = position;
@@ -28,7 +29,7 @@ void TA_MechaGolemEnergyShot::load(TA_Point position) {
 }
 
 bool TA_MechaGolemEnergyShot::update() {
-    static constexpr float flySpeed = 0.3;
+    static constexpr float flySpeed = 0.8;
     static constexpr float turnSpeed = 0.02;
 
     TA_Point delta = objectSet->getCharacterPosition() - (position + TA_Point(7, 7));
@@ -50,11 +51,11 @@ bool TA_MechaGolemEnergyShot::update() {
         }
     }
 
-    position += TA_Point(std::cos(angle), std::sin(angle)) * flySpeed;
+    position += TA_Point(std::cos(angle), std::sin(angle)) * flySpeed * TA::elapsedTime;
     updatePosition();
 
     int flags = objectSet->checkCollision(hitbox);
-    if((flags & (TA_COLLISION_SOLID | TA_COLLISION_SOLID_UP | TA_COLLISION_ATTACK | TA_COLLISION_CHARACTER)) != 0) {
+    if((flags & (TA_COLLISION_SOLID | TA_COLLISION_SOLID_UP | TA_GENERIC_ATTACK | TA_COLLISION_CHARACTER)) != 0) {
         bool hit = (flags & TA_COLLISION_CHARACTER) != 0;
         objectSet->spawnObject<TA_Explosion>(
             position - TA_Point(1, 1), 0, hit ? TA_EXPLOSION_ENEMY : TA_EXPLOSION_NEUTRAL);
@@ -64,13 +65,17 @@ bool TA_MechaGolemEnergyShot::update() {
 }
 
 void TA_MechaGolemEnergyShot::draw() {
-    static constexpr float glowInterval = 5;
+    static constexpr float glowInterval = 3;
 
-    glowTimer = std::fmod(glowTimer + TA::elapsedTime, glowInterval * 2);
+    glowTimer = std::fmod(glowTimer + TA::elapsedTime, glowInterval * 4);
     if(glowTimer < glowInterval) {
-        foregroundSprite.setAlpha(static_cast<int>(255 * (glowTimer / glowInterval)));
+        foregroundSprite.setAlpha(0);
+    } else if(glowTimer < glowInterval * 2) {
+        foregroundSprite.setAlpha(static_cast<int>(255 * ((glowTimer - glowInterval) / glowInterval)));
+    } else if(glowTimer < glowInterval * 3) {
+        foregroundSprite.setAlpha(255);
     } else {
-        foregroundSprite.setAlpha(static_cast<int>(255 - (255 * ((glowTimer - glowInterval) / glowInterval))));
+        foregroundSprite.setAlpha(static_cast<int>(255 - (255 * ((glowTimer - glowInterval * 3) / glowInterval))));
     }
 
     backgroundSprite.draw();

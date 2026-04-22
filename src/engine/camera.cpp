@@ -2,15 +2,17 @@
 #include <algorithm>
 #include "tools.h"
 
-void TA_Camera::setFollowPosition(TA_Point* newFollowPosition) {
-    updateOffset();
+void TA_Camera::setFollowPosition(TA_Point* newFollowPosition, bool hotswap) {
     followPosition = newFollowPosition;
 
-    if(!lockedX) {
-        position.x = (*followPosition).x;
-    }
-    if(!lockedY) {
-        position.y = (*followPosition).y - yBottomOffset;
+    if(!hotswap) {
+        updateOffset();
+        if(!lockedX) {
+            position.x = (*followPosition).x;
+        }
+        if(!lockedY) {
+            position.y = (*followPosition).y - yBottomOffset;
+        }
     }
 }
 
@@ -33,7 +35,7 @@ void TA_Camera::setBorder(TA_Point topLeft, TA_Point bottomRight) {
     this->borderBottomRight = bottomRight;
 }
 
-void TA_Camera::update(bool ground, bool spring) {
+void TA_Camera::update(bool ground, bool spring, bool canLock) {
     updateOffset();
     float movementSpeed = airSpeed;
     if(ground) {
@@ -43,11 +45,19 @@ void TA_Camera::update(bool ground, bool spring) {
         movementSpeed = springSpeed;
     }
 
+    stable = true;
+
     auto move = [&](float current, float need) {
         if(current < need) {
             current = std::min(need, current + movementSpeed * TA::elapsedTime);
+            if(current != need) {
+                stable = false;
+            }
         } else {
             current = std::max(need, current - movementSpeed * TA::elapsedTime);
+            if(current != need) {
+                stable = false;
+            }
         }
         return current;
     };
@@ -65,6 +75,8 @@ void TA_Camera::update(bool ground, bool spring) {
         } else if(position.x > watchPosition.x + (offset ? xOffset : 0)) {
             position.x = move(position.x, watchPosition.x + (offset ? xOffset : 0));
         }
+    } else if(followingLockX) {
+        position.x = move(position.x, lockPosition.x);
     }
     if(!lockedY) {
         if(position.y < watchPosition.y - (offset ? yBottomOffset : 0)) {
@@ -72,9 +84,11 @@ void TA_Camera::update(bool ground, bool spring) {
         } else if(position.y > watchPosition.y + (offset ? yTopOffset : 0)) {
             position.y = move(position.y, watchPosition.y + (offset ? yTopOffset : 0));
         }
+    } else if(followingLockY) {
+        position.y = move(position.y, lockPosition.y);
     }
 
-    if(locked && lockPosition.getDistance(position) <= maxLockDistance) {
+    if(locked && canLock && lockPosition.getDistance(position) <= maxLockDistance) {
         if(!lockedX && (TA::sign(previousPosition.x - lockPosition.x) != TA::sign(position.x - lockPosition.x) ||
                            abs(position.x - lockPosition.x) < 0.5)) {
             position.x = lockPosition.x;

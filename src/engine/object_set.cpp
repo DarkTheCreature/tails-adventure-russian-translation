@@ -1,4 +1,5 @@
 #include "object_set.h"
+#include <array>
 #include <toml.hpp>
 #include "character.h"
 #include "error.h"
@@ -19,6 +20,7 @@
 #include "objects/fire.h"
 #include "objects/flame.h"
 #include "objects/grass_block.h"
+#include "objects/great_battle_kukku.h"
 #include "objects/heavy_gun.h"
 #include "objects/hover_pod.h"
 #include "objects/item_box.h"
@@ -40,6 +42,7 @@
 #include "objects/sliding_bomb.h"
 #include "objects/sniper.h"
 #include "objects/speedy.h"
+#include "objects/speedy2.h"
 #include "objects/transition.h"
 #include "objects/underwater_barrier.h"
 #include "objects/underwater_gun.h"
@@ -50,6 +53,8 @@
 #include "resource_manager.h"
 #include "save.h"
 #include "sea_fox.h"
+#include "tilemap.h"
+#include "tools.h"
 
 inline float asIntOrFloat(const toml::value& value) {
     if(value.is_floating()) {
@@ -492,6 +497,14 @@ void TA_ObjectSet::loadObject(std::string name, toml::value object) {
         spawnObject<TA_CannonLauncher>(position, flip);
     }
 
+    else if(name == "speedy2") {
+        spawnObject<TA_Speedy2>(position);
+    }
+
+    else if(name == "great_battle_kukku") {
+        spawnObject<TA_GreatBattleKukku>(position);
+    }
+
     else {
         TA::handleError("unknown object %s", name.c_str());
     }
@@ -548,8 +561,12 @@ void TA_ObjectSet::checkCollision(TA_Rect& hitbox, int& flags) {
         flags |= TA_COLLISION_CHARACTER;
     }
 
-    if(links.character && links.character->isUsingHammer() && links.character->getHammerHitbox()->intersects(hitbox)) {
-        flags |= TA_COLLISION_ATTACK;
+    if(links.character && links.character->isAttacking() && links.character->getAttackHitbox()->intersects(hitbox)) {
+        if(links.character->isUsingHelmet()) {
+            flags |= TA_COLLISION_HELMET;
+        } else {
+            flags |= TA_COLLISION_ATTACK;
+        }
     }
     if(links.seaFox && links.seaFox->getDrillHitbox()->intersects(hitbox)) {
         flags |= TA_COLLISION_DRILL;

@@ -1,9 +1,8 @@
 #include "character.h"
 #include <algorithm>
 #include <cmath>
-#include "error.h"
-#include "gamepad.h"
-#include "hud.h"
+#include "controller.h"
+#include "keyboard.h"
 #include "object_set.h"
 #include "save.h"
 #include "tools.h"
@@ -50,7 +49,7 @@ void TA_Character::handleInput() {
         }
     }
 
-    if(state == STATE_THROW_BOMB || state == STATE_HAMMER) {
+    if(state == STATE_THROW_BOMB || state == STATE_HAMMER || state == STATE_HELMET) {
         setPosition(position);
         hitbox.setPosition(position);
     }
@@ -79,6 +78,11 @@ void TA_Character::update() {
 
     if(state == STATE_HAMMER) {
         updateHammer();
+        return;
+    }
+
+    if(state == STATE_HELMET) {
+        updateHelmet();
         return;
     }
 
@@ -144,7 +148,7 @@ void TA_Character::update() {
     updateTool();
     updateFollowPosition();
     if(state == STATE_THROW_BOMB || state == STATE_REMOTE_ROBOT_RETURN || state == STATE_TELEPORT ||
-        state == STATE_HAMMER) {
+        state == STATE_HAMMER || state == STATE_HELMET) {
         return;
     }
     updateAnimation();
@@ -194,6 +198,8 @@ void TA_Character::updateAnimation() {
             setAnimation("idle");
         } else if(wall) {
             setAnimation("push");
+        } else if(usingSpeedBoots) {
+            setAnimation("run");
         } else {
             setAnimation("walk");
         }
@@ -351,7 +357,7 @@ bool TA_Character::displayFlightTimeBar() {
     if(state == STATE_TELEPORT) {
         return false;
     }
-    return helitail && !remoteRobot;
+    return helitail && !remoteRobot && !hidden;
 }
 
 void TA_Character::setCharacterPosition(TA_Point position) {
@@ -366,7 +372,7 @@ void TA_Character::setCharacterPosition(TA_Point position) {
 }
 
 void TA_Character::restoreFollowPosition() {
-    links.objectSet->getLinks().camera->setFollowPosition(&followPosition);
+    links.objectSet->getLinks().camera->setFollowPosition(&followPosition, true);
 }
 
 void TA_Character::setPaused(bool paused) {

@@ -1,6 +1,6 @@
 #include "hover_pod.h"
 #include "dead_kukku.h"
-#include "tilemap.h"
+#include "defs.h"
 #include "tools.h"
 
 void TA_HoverPod::load(TA_Point newPosition, int range, bool flip) {
@@ -49,7 +49,7 @@ bool TA_HoverPod::update() {
 
     int flags;
     objectSet->checkCollision(hitbox, flags);
-    if(flags & TA_COLLISION_ATTACK) {
+    if(flags & TA_GENERIC_ATTACK) {
         objectSet->spawnObject<TA_DeadKukku>(position);
         objectSet->resetInstaShield();
         return false;

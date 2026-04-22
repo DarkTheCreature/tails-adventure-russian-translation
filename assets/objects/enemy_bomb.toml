@@ -1,0 +1,8 @@
+[sprite]
+image = "enemy_bomb.png"
+width = 8
+height = 13
+
+[animations]
+idle = 0
+

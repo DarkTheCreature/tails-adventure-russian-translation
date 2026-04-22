@@ -1,9 +1,22 @@
 #include "dr_fukurokov.h"
 #include "bullet.h"
+#include "defs.h"
+#include "save.h"
 #include "sound.h"
-#include "tilemap.h"
+#include "tools.h"
+
+namespace {
+    bool isComplete() {
+        int64_t bossMask = TA::save::getSaveParameter("boss_mask");
+        return (bossMask & TA_BOSS_DR_FUKUROKOV) != 0;
+    }
+} // namespace
 
 void TA_DrFukurokov::load(const Properties& properties) {
+    if(isComplete()) {
+        return;
+    }
+
     loadFromToml("objects/dr_fukurokov/dr_fukurokov.toml");
     this->startPosition = properties.startPosition;
     this->controlPosition = properties.controlPosition;
@@ -15,7 +28,7 @@ void TA_DrFukurokov::load(const Properties& properties) {
     // TODO: don't hardcode music path
     TA::sound::playMusic("sound/boss.vgm");
 
-    drFukurokovSound.load("sound/dr_fukurokov.ogg", TA_SOUND_CHANNEL_SFX1);
+    waitSound.load("sound/boss_wait.ogg", TA_SOUND_CHANNEL_SFX1);
     quickFallSound.load("sound/quick_fall.ogg", TA_SOUND_CHANNEL_SFX1);
 
     mockPosition = objectSet->getCharacterSpawnPoint();
@@ -49,6 +62,11 @@ void TA_DrFukurokov::load(const Properties& properties) {
 }
 
 bool TA_DrFukurokov::update() {
+    if(firstUpdate && isComplete()) {
+        return false;
+    }
+    firstUpdate = false;
+
     switch(state) {
         case State::WAIT_CHARACTER:
             updateWaitCharacter();
@@ -84,7 +102,7 @@ void TA_DrFukurokov::updateWaitCharacter() {
     objectSet->getLinks().camera->setFollowPosition(&followPosition);
 
     if(prevX < position.x - 80 && mockPosition.x >= position.x - 80) {
-        drFukurokovSound.play();
+        waitSound.play();
     }
 
     if(mockPosition.x > position.x - 41) {
@@ -152,6 +170,10 @@ void TA_DrFukurokov::updateControl() {
         setAnimation("defeated");
         collisionType = TA_COLLISION_TRANSPARENT;
         state = State::DEFEATED;
+
+        int64_t bossMask = TA::save::getSaveParameter("boss_mask");
+        bossMask |= TA_BOSS_DR_FUKUROKOV;
+        TA::save::setSaveParameter("boss_mask", bossMask);
     }
 }
 

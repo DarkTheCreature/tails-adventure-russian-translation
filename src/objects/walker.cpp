@@ -1,6 +1,6 @@
 #include "walker.h"
 #include "dead_kukku.h"
-#include "tilemap.h"
+#include "defs.h"
 #include "tools.h"
 
 void TA_Walker::load(TA_Point newPosition, int range, bool flip) {
@@ -46,7 +46,7 @@ bool TA_Walker::update() {
 
     int flags;
     objectSet->checkCollision(hitbox, flags);
-    if(flags & TA_COLLISION_ATTACK) {
+    if(flags & TA_GENERIC_ATTACK) {
         objectSet->spawnObject<TA_DeadKukku>(position);
         objectSet->resetInstaShield();
         return false;

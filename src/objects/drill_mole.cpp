@@ -1,7 +1,9 @@
 #include "drill_mole.h"
 #include <cmath>
+#include "defs.h"
 #include "explosion.h"
 #include "ring.h"
+#include "tools.h"
 
 void TA_DrillMole::load(TA_Point position) {
     this->position = position;
@@ -67,7 +69,7 @@ bool TA_DrillMole::shouldBeDestroyed() {
     if(getStateAndTime().first != STATE_IDLE_UP) {
         return false;
     }
-    if(objectSet->checkCollision(hitbox) & TA_COLLISION_ATTACK) {
+    if(objectSet->checkCollision(hitbox) & TA_GENERIC_ATTACK) {
         return true;
     }
     return false;

@@ -1,6 +1,7 @@
 #include "game_screen.h"
 #include "resource_manager.h"
 #include "save.h"
+#include "tools.h"
 
 void TA_GameScreen::init() {
     const toml::value& table = TA::resmgr::loadToml(TA::levelPath + ".toml");
@@ -71,10 +72,10 @@ TA_ScreenState TA_GameScreen::update() {
 
         if(isSeaFox) {
             seaFox.update();
-            camera.update(!isSeaFoxGround && !isSeaFoxFly, seaFox.isFastCamera());
+            camera.update(!isSeaFoxGround && !isSeaFoxFly, seaFox.isFastCamera(), true);
         } else {
             character.update();
-            camera.update(character.isOnGround(), character.isFastCamera());
+            camera.update(character.isOnGround(), character.isFastCamera(), !character.isRemoteRobot());
         }
     }
 

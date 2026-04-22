@@ -1,6 +1,7 @@
 #include "rock_thrower.h"
 #include "dead_kukku.h"
-#include "tilemap.h"
+#include "defs.h"
+#include "tools.h"
 
 void TA_RockThrower::load(TA_Point position, bool direction) {
     this->position = position;
@@ -89,7 +90,7 @@ TA_Point TA_RockThrower::getRockVelocity() {
 }
 
 bool TA_RockThrower::shouldBeDestroyed() {
-    if(objectSet->checkCollision(hitbox) & TA_COLLISION_ATTACK) {
+    if(objectSet->checkCollision(hitbox) & TA_GENERIC_ATTACK) {
         return true;
     }
     return false;

@@ -1,5 +1,6 @@
 #include "wood.h"
 #include "dead_kukku.h"
+#include "tools.h"
 
 void TA_Wood::load(TA_Point position) {
     loadFromToml("objects/wood.toml");
@@ -61,7 +62,7 @@ void TA_Wood::updateAttack() {
         velocity.y = std::min(maxYSpeed, velocity.y + gravity * TA::elapsedTime);
     }
 
-    if(bird && (objectSet->checkCollision(hitboxVector[0].hitbox) & TA_COLLISION_ATTACK) != 0) {
+    if(bird && (objectSet->checkCollision(hitboxVector[0].hitbox) & TA_GENERIC_ATTACK) != 0) {
         objectSet->spawnObject<TA_DeadKukku>(position - TA_Point(4, 32));
         bird = false;
     }

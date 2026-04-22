@@ -1,5 +1,6 @@
 #include "devmenu_screen.h"
 #include "save.h"
+#include "tools.h"
 
 void TA_DevmenuScreen::init() {
     controller.load();
@@ -44,6 +45,7 @@ void TA_DevmenuScreen::init() {
         "maps/bf/bf2",
         "maps/bf/bf3",
         "maps/bf/bf4",
+        "maps/bf/bf5",
     };
 }
 

@@ -1,7 +1,8 @@
 #include "cannon_launcher.h"
 #include "bullet.h"
 #include "dead_kukku.h"
-#include "tilemap.h"
+#include "defs.h"
+#include "tools.h"
 
 void TA_CannonLauncher::load(TA_Point position, bool flip) {
     loadFromToml("objects/cannon_launcher.toml");
@@ -37,7 +38,7 @@ bool TA_CannonLauncher::update() {
         }
     }
 
-    if((objectSet->checkCollision(hitbox) & TA_COLLISION_ATTACK) != 0) {
+    if((objectSet->checkCollision(hitbox) & TA_GENERIC_ATTACK) != 0) {
         objectSet->spawnObject<TA_DeadKukku>(position + TA_Point(flip ? 0 : 8, 0));
         return false;
     }

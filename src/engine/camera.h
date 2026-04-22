@@ -20,17 +20,22 @@ private:
     int borderMask = 15;
     bool locked = false, lockedX = false, lockedY = false;
     float shakeTime = -1;
+    bool stable = true;
+    bool followingLockX = false, followingLockY = false;
 
 public:
-    void update(bool ground, bool spring);
-    void setFollowPosition(TA_Point* newFollowPosition);
+    void update(bool ground, bool spring, bool canLock);
+    void setFollowPosition(TA_Point* newFollowPosition, bool hotswap = false);
     void setLockPosition(TA_Point newLockPosition);
     void forceLockX();
+    void followLockX() { lockedX = followingLockX = true; }
+    void followLockY() { lockedY = followingLockY = true; }
     bool isLocked() { return locked && lockedX && lockedY; }
-    void unlock() { locked = lockedX = lockedY = false; }
+    void unlock() { locked = lockedX = lockedY = followingLockX = followingLockY = false; }
     void setBorder(TA_Point topLeft, TA_Point bottomRight);
     void setBorderMask(int mask) { borderMask = mask; }
     void shake(float time) { shakeTime = time; }
+    bool isStable() { return stable; }
     TA_Point getPosition() { return position + shakeDelta; }
     TA_Point getRelative(TA_Point realPosition) { return realPosition - (position + shakeDelta); }
 };

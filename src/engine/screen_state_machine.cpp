@@ -1,4 +1,5 @@
 #include "screen_state_machine.h"
+#include "credits_screen.h"
 #include "devmenu_screen.h"
 #include "error.h"
 #include "game_over_screen.h"
@@ -9,6 +10,7 @@
 #include "map_screen.h"
 #include "save.h"
 #include "title_screen.h"
+#include "tools.h"
 
 void TA_ScreenStateMachine::init() {
     if(TA::arguments.count("--devmenu")) {
@@ -71,6 +73,9 @@ bool TA_ScreenStateMachine::update() {
                 break;
             case TA_SCREENSTATE_MAIN_MENU:
                 currentScreen = std::make_unique<TA_MainMenuScreen>();
+                break;
+            case TA_SCREENSTATE_CREDITS:
+                currentScreen = std::make_unique<TA_CreditsScreen>();
                 break;
             default:
                 TA::handleError("%s", "invalid new screen state");

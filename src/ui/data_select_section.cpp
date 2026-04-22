@@ -3,6 +3,7 @@
 #include <numeric>
 #include "resource_manager.h"
 #include "save.h"
+#include "tools.h"
 
 void TA_DataSelectSection::load() {
     entrySprite.load("data_select/entry.png");
@@ -236,9 +237,10 @@ int TA_DataSelectSection::getSavePercent(int save) {
     }
 
     std::string saveName = "save_" + std::to_string(save);
-    int areaCount = std::popcount((unsigned long long)TA::save::getParameter(saveName + "/area_mask"));
-    int itemCount = std::popcount((unsigned long long)TA::save::getParameter(saveName + "/item_mask"));
-    return 50 * (float(areaCount - 3) / 13 + float(itemCount - 2) / 30);
+    int areaCount = std::popcount(static_cast<uint64_t>(TA::save::getParameter(saveName + "/area_mask")));
+    int itemCount = std::popcount(static_cast<uint64_t>(TA::save::getParameter(saveName + "/item_mask")));
+    int bossCount = std::popcount(static_cast<uint64_t>(TA::save::getParameter(saveName + "/boss_mask")));
+    return std::min(100, (30 * std::min(11, areaCount - 3) / 11) + (30 * bossCount / 8) + (40 * (itemCount - 2) / 30));
 }
 
 std::string TA_DataSelectSection::getSaveTime(int save) {
@@ -302,19 +304,25 @@ std::vector<std::string> TA_DataSelectSection::generateSplashSequence() {
 std::string TA_DataSelectSection::generateSplash() {
     const std::vector<std::string> splashes{
         "Free as in freedom",
-        "Also try Sonic Forces",
+        "GNU/Tails Adventure",
         "Bleeding edge SDL3 o_o",
         "One Piece wa jitsuzai suru!",
         "Row Row Fight The Power",
         "Giga Drill Break!",
         "Blazingly fast!",
         "Memory unsafe :(",
+        "C++23!",
         "Mods supported!",
         "Only 3% can pass!",
         "You have (not) tried",
         "Nanomachines, son!",
-        "hjkl friendly?",
         "Flint and Steel!",
+        "Usecase?",
+        "peak fiction",
+        "Absolute cinema!",
+        "Fun is infinite",
+        "The cake is a lie",
+        "Every copy is personalized",
     };
 
     return splashes[TA::random::next() % static_cast<int>(splashes.size())];

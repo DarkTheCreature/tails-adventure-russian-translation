@@ -3,6 +3,7 @@
 #include "dead_kukku.h"
 #include "sea_fox.h"
 #include "tilemap.h"
+#include "tools.h"
 
 bool TA_PilotSpawner::update() {
     timer += TA::elapsedTime;
@@ -76,7 +77,7 @@ bool TA_Pilot::update() {
     updatePosition();
 
     int flags = objectSet->checkCollision(hitbox);
-    if((flags & TA_COLLISION_ATTACK) != 0 || destroy) {
+    if((flags & TA_GENERIC_ATTACK) != 0 || destroy) {
         objectSet->spawnObject<TA_DeadKukku>(position);
         return false;
     }
