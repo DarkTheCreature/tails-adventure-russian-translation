@@ -55,7 +55,7 @@ void TA_Character::updateCollisions() {
         if(velocity.y < 0.01 && !useSolidDownTiles) {
             useSolidDownTiles = true;
             TA_Rect hitbox;
-            hitbox.setRectangle(topLeft - TA_Point(0.01, 0.01), bottomRight + TA_Point(0.01, 0.01));
+            hitbox.setRectangle(topLeft, bottomRight);
             hitbox.setPosition(position);
             if((links.objectSet->checkCollision(hitbox) & getSolidFlags()) != 0) {
                 useSolidDownTiles = false;
@@ -318,6 +318,9 @@ void TA_Character::updateSpringCollision() {
     hitbox.setRectangle({topLeft.x + 0.01, bottomRight.y - 0.01}, bottomRight + TA_Point(-0.01, 0.01));
 
     if(links.objectSet->checkCollision(hitbox) & TA_COLLISION_SPRING) {
+        if(state == STATE_HELMET) {
+            state = STATE_NORMAL;
+        }
         jumpSound.play();
         jumpSpeed = springYsp;
         jump = spring = true;
