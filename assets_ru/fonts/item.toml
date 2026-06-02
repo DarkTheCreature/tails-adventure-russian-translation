@@ -2,5 +2,5 @@
 image = "item.png"
 width = 8
 height = 8
-mapping = "абвдефгшижклмнопюрстузчхяэ CD.?-0123456789SABFьыцщй"
+mapping = "абвдефгшижклмнопюрстузчхяэ CD.?-0123456789SABFьыцщйabcdefghijklmnopqrstuvwxyz"
 

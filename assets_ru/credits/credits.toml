@@ -1,0 +1,39 @@
+credits = [
+	{ lines=["ремейк", "tails adventure"] },
+	{ line="титры" },
+	
+	{ lines=["продюсер", "k.hasegawa"], sides=true },
+	{ lines=["директор", "k.hasegawa"], sides=true },
+	
+	{ line="геймдизайнеры", head=true },
+	{ line="m.simamura" },
+	{ line="o.kodera" },
+	
+	{ line="художники", head=true },
+	{ line="n.honda" },
+	{ line="s.higashi" },
+	
+	{ line="программисты", head=true },
+	{ line="k.oikawa" },
+	{ line="h.saigusa" },
+	{ line="y.makishima" },
+	{ line="mechakotik" },
+	
+	{ lines=["звуковой композитор", "k.mixa"] },
+	
+	{ line="особая благодарность", head=true },
+	{ line="t.ihoroi" },
+	{ line="p.tezuka" },
+	{ line="h.yoshida" },
+	{ line="r.fujimura" },
+	{ line="r.hasegawa" },
+	{ line="o.nakazoto" },
+	{ line="t.kojima" },
+	{ line="suppertails66" },
+	{ line="помощникам разработки" },
+	{ line="sonic fangames hq" },
+	{ line="...и тебе" },
+	{ line="представлено sega" },
+	{ line="к о н е ц" }
+]
+
